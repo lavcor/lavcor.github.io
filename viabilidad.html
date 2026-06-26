@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análisis de Viabilidad — Zanda Homes</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f3f1;min-height:100vh;padding:24px 16px 48px}
+:root{--granate:#491124;--rosa:#AD3A61;--rosa-light:#f5e6ec;--border:#e2e2e2;--bg:#f8f7f6;--white:#ffffff;--text:#1a1a1a;--text-mid:#555;--text-muted:#888;--green:#1a7f4b;--green-bg:#eaf5ef;--amber:#8a5c00;--amber-bg:#fdf3dc;--red:#c0392b;--red-bg:#fdf0ee}
+.app{max-width:720px;margin:0 auto}
+.hdr{background:var(--granate);padding:20px 24px;display:flex;align-items:center;gap:14px;border-radius:10px 10px 0 0}
+.logo{width:36px;height:36px;background:var(--rosa);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0;letter-spacing:1px}
+.hdr h1{color:#fff;font-size:16px;font-weight:500}
+.hdr p{color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px}
+.body{background:var(--white);border:0.5px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:24px}
+.sl{font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--rosa);text-transform:uppercase;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--rosa-light)}
+.sec{margin-bottom:22px}
+.tog{display:flex;gap:8px;margin-bottom:14px}
+.tb{flex:1;padding:9px;border:1.5px solid var(--border);border-radius:8px;background:var(--white);font-size:13px;color:var(--text-mid);cursor:pointer;font-weight:500;transition:all .15s}
+.tb.active{border-color:var(--granate);background:#fbf0f3;color:var(--granate)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+.fd{display:flex;flex-direction:column;gap:4px}
+.fd label{font-size:12px;color:var(--text-muted);font-weight:500}
+.fd input,.fd select{padding:8px 10px;border:0.5px solid var(--border);border-radius:6px;font-size:13px;color:var(--text);background:var(--white);width:100%}
+.fd input:focus,.fd select:focus{outline:none;border-color:var(--rosa)}
+.tip-row{display:grid;grid-template-columns:90px 1fr 1fr 1fr 28px;gap:8px;align-items:end;margin-bottom:8px}
+.add-btn{font-size:12px;color:var(--rosa);background:none;border:1px dashed var(--rosa);border-radius:6px;padding:7px 12px;cursor:pointer;margin-top:4px;width:100%}
+.rm{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:18px;padding:6px 4px;line-height:1;align-self:end}
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.rf{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg);border-radius:6px}
+.rf label{font-size:12px;color:var(--text-mid);flex:1}
+.rf input{width:72px;padding:5px 7px;border:0.5px solid var(--border);border-radius:5px;font-size:12px;text-align:right;background:var(--white);color:var(--text)}
+.rf span{font-size:11px;color:var(--text-muted);min-width:50px}
+.imp-sub{background:#fdf5f8;border-radius:6px;border-left:2px solid var(--rosa-light);padding:8px 10px 8px 14px;margin-bottom:8px}
+.imp-sub .rg{margin-bottom:0}
+.imp-label{font-size:11px;color:var(--rosa);font-weight:600;margin-bottom:6px}
+.calc-btn{width:100%;padding:13px;background:var(--granate);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;margin-top:8px;transition:background .15s}
+.calc-btn:hover{background:#5c1530}
+.resultado{margin-top:22px;border:1.5px solid var(--granate);border-radius:10px;overflow:hidden}
+.rhdr{background:var(--granate);padding:13px 20px;display:flex;justify-content:space-between;align-items:center}
+.rhdr h2{color:#fff;font-size:14px;font-weight:500}
+.rhdr span{color:rgba(255,255,255,0.55);font-size:12px}
+.rbody{padding:20px}
+.kg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.kpi{background:var(--bg);border-radius:8px;padding:12px 14px}
+.kl{font-size:11px;color:var(--text-muted);margin-bottom:4px}
+.kv{font-size:18px;font-weight:500;color:var(--text)}
+.kv.g{color:var(--green)}.kv.w{color:var(--amber)}.kv.b{color:var(--red)}
+.ct{width:100%;border-collapse:collapse;font-size:13px}
+.ct td{padding:5px 0;border-bottom:0.5px solid var(--bg);color:var(--text)}
+.ct td:last-child{text-align:right;font-weight:500}
+.ct .sub td{padding:3px 0 3px 14px;color:var(--text-muted);font-size:12px;border-bottom:none}
+.ct .sub td:last-child{font-weight:400}
+.ct .sub2 td{padding:2px 0 2px 26px;color:var(--text-muted);font-size:11px;border-bottom:none}
+.ct .sub2 td:last-child{font-weight:400}
+.ct .tot td{padding:9px 0 5px;font-weight:500;border-top:1.5px solid var(--border);border-bottom:none;font-size:14px}
+.ct .ben td{font-weight:500;font-size:14px;border-bottom:none;color:var(--green)}
+.ct .ben.w td{color:var(--amber)}.ct .ben.b td{color:var(--red)}
+.alerts{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.alert{padding:9px 13px;border-radius:6px;font-size:12px;display:flex;gap:8px;align-items:flex-start}
+.alert.w{background:var(--amber-bg);color:var(--amber)}
+.alert.g{background:var(--green-bg);color:var(--green)}
+.alert.b{background:var(--red-bg);color:var(--red)}
+.rbox{background:var(--rosa-light);border:1px solid var(--rosa);border-radius:8px;padding:14px;margin-top:16px;text-align:center}
+.rbox .rl{font-size:12px;color:var(--rosa);margin-bottom:4px}
+.rbox .rv{font-size:22px;font-weight:500;color:var(--granate)}
+.hidden{display:none}
+.hint{font-size:11px;color:var(--text-muted);margin-top:4px}
+.pill{display:inline-block;background:#f0eaf3;color:var(--granate);font-size:11px;padding:2px 8px;border-radius:4px;margin-top:4px}
+.tip-hdr{font-size:11px;color:var(--text-muted);display:grid;grid-template-columns:90px 1fr 1fr 1fr 28px;gap:8px;margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="hdr">
+  <div class="logo">Z</div>
+  <div><h1>Análisis de viabilidad</h1><p>Zanda Homes · Estudio rápido previo a fase de detalle</p></div>
+</div>
+<div class="body">
+
+<div class="sec">
+  <div class="sl">Identificación</div>
+  <div class="g2">
+    <div class="fd"><label>Nombre del proyecto</label><input type="text" id="nombre" placeholder=""></div>
+    <div class="fd"><label>Ubicación</label><input type="text" id="ubicacion" placeholder=""></div>
+  </div>
+  <div class="tog">
+    <button class="tb active" id="btn-prom" onclick="setTipo('promocion')">Promoción tradicional</button>
+    <button class="tb" id="btn-coop" onclick="setTipo('cooperativa')">Cooperativa (gestora)</button>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sl">Producto</div>
+  <div class="g2">
+    <div class="fd"><label>Sup. parcela (m²)</label><input type="number" id="parcela" oninput="calcular()"></div>
+    <div class="fd"><label>Sup. edificable (m²)</label><input type="number" id="edificable" oninput="calcular()"></div>
+  </div>
+  <div class="tip-hdr"><span>Tipo</span><span>Uds</span><span>m²c / ud</span><span>€/m²c</span><span></span></div>
+  <div id="tipologias"></div>
+  <button class="add-btn" onclick="addTip()">+ Añadir tipología</button>
+  <div class="g3" style="margin-top:14px">
+    <div class="fd"><label>Locales — m²c totales</label><input type="number" id="loc-m2" oninput="calcular()"></div>
+    <div class="fd"><label>€/m²c local</label><input type="number" id="loc-p" oninput="calcular()"></div>
+    <div class="fd"><label>Garajes no vinc. (uds)</label><input type="number" id="gar-u" oninput="calcular()"></div>
+  </div>
+  <div class="g2">
+    <div class="fd"><label>Precio garaje (€/ud)</label><input type="number" id="gar-p" oninput="calcular()"></div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sl">Suelo</div>
+  <div class="tog">
+    <button class="tb active" id="btn-dado" onclick="setSuelo('dado')">Me dan el precio</button>
+    <button class="tb" id="btn-res" onclick="setSuelo('residual')">Calcular precio máximo</button>
+  </div>
+  <div id="suelo-dado">
+    <div class="g3">
+      <div class="fd">
+        <label>Precio suelo (€ totales)</label>
+        <input type="number" id="p-suelo" oninput="calcular()">
+        <span class="pill" id="pill-m2e" style="display:none"></span>
+      </div>
+      <div class="fd"><label>% aplazado</label><input type="number" id="s-aplaz" value="90" oninput="calcular()"></div>
+      <div class="fd"><label>% intermediación s/suelo</label><input type="number" id="s-interm" value="2.5" step="0.1" oninput="calcular()"></div>
+    </div>
+    <div class="g2">
+      <div class="fd"><label>% costes transacción s/suelo</label><input type="number" id="s-trans" value="0.95" step="0.05" oninput="calcular()"></div>
+    </div>
+  </div>
+  <div id="suelo-residual" class="hidden">
+    <div class="fd"><label>Margen bruto objetivo (%)</label><input type="number" id="mg-obj" value="15" oninput="calcular()"></div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sl">Construcción</div>
+  <div class="g4">
+    <div class="fd"><label>€/m²c sobre rasante</label><input type="number" id="c-sr" oninput="calcular()"></div>
+    <div class="fd"><label>€/m²c bajo rasante</label><input type="number" id="c-br" oninput="calcular()"></div>
+    <div class="fd"><label>m²c sobre rasante</label><input type="number" id="m2-sr" oninput="calcular()"></div>
+    <div class="fd"><label>m²c bajo rasante</label><input type="number" id="m2-br" oninput="calcular()"></div>
+  </div>
+  <div class="g2" style="margin-top:10px">
+    <div class="fd"><label>Duración obra (meses)</label><input type="number" id="dur" value="22" oninput="calcular()"></div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sl">Ratios de costes</div>
+  <div class="rg">
+    <div class="rf"><label>Urbanización</label><input type="number" id="r-urb" value="0" step="1" oninput="calcular()"><span>€/m²e</span></div>
+    <div class="rf"><label>Honorarios técnicos</label><input type="number" id="r-hon" value="6.25" step="0.25" oninput="calcular()"><span>% s/const</span></div>
+    <div class="rf"><label>Costes legales</label><input type="number" id="r-leg" value="1.25" step="0.05" oninput="calcular()"><span>% s/ventas</span></div>
+    <div class="rf"><label>Comercialización</label><input type="number" id="r-com" value="2.5" step="0.1" oninput="calcular()"><span>% s/ventas</span></div>
+    <div class="rf"><label>Gestión / PM</label><input type="number" id="r-pm" value="5" step="0.5" oninput="calcular()"><span>% s/const</span></div>
+    <div class="rf"><label>Seguros</label><input type="number" id="r-seg" value="0.99" step="0.05" oninput="calcular()"><span>% s/const</span></div>
+    <div class="rf"><label>Coste financiero</label><input type="number" id="r-fin" value="5.76" step="0.1" oninput="calcular()"><span>% s/costes</span></div>
+  </div>
+  <div class="imp-sub">
+    <div class="imp-label">Impuestos y licencias</div>
+    <div class="rg">
+      <div class="rf"><label>ICIO y tasas de licencia</label><input type="number" id="r-icio" value="3.94" step="0.1" oninput="calcular()"><span>% s/const</span></div>
+      <div class="rf"><label>IBI durante obra</label><input type="number" id="r-ibi" value="0.47" step="0.01" oninput="calcular()"><span>% s/const</span></div>
+      <div class="rf"><label>Primera ocupación</label><input type="number" id="r-po" value="0.12" step="0.01" oninput="calcular()"><span>% s/const</span></div>
+      <div class="rf"><label>Plusvalías municipales</label><input type="number" id="r-pv" value="0.4" step="0.05" oninput="calcular()"><span>% s/ventas</span></div>
+    </div>
+  </div>
+</div>
+
+<button class="calc-btn" onclick="calcular()">Calcular viabilidad</button>
+
+<div class="resultado hidden" id="resultado">
+  <div class="rhdr">
+    <h2 id="r-tit">Resumen ejecutivo</h2>
+    <span id="r-meta"></span>
+  </div>
+  <div class="rbody">
+    <div class="kg">
+      <div class="kpi"><div class="kl">Margen bruto</div><div class="kv" id="k-mg">—</div></div>
+      <div class="kpi"><div class="kl">Beneficio a/imp.</div><div class="kv" id="k-ben">—</div></div>
+      <div class="kpi"><div class="kl">ROI</div><div class="kv" id="k-roi">—</div></div>
+      <div class="kpi"><div class="kl">Inv. máxima</div><div class="kv" id="k-inv">—</div></div>
+    </div>
+    <table class="ct">
+      <tr><td>Ventas totales</td><td id="o-vtas">—</td></tr>
+      <tr class="sub"><td>Viviendas</td><td id="o-viv">—</td></tr>
+      <tr class="sub"><td>Locales</td><td id="o-loc">—</td></tr>
+      <tr class="sub"><td>Garajes</td><td id="o-gar">—</td></tr>
+      <tr><td style="padding-top:10px">Costes totales</td><td id="o-cost">—</td></tr>
+      <tr class="sub"><td>Suelo (incl. intermediación + transacción)</td><td id="o-suelo">—</td></tr>
+      <tr class="sub"><td>Urbanización</td><td id="o-urb">—</td></tr>
+      <tr class="sub"><td>Construcción SR</td><td id="o-csr">—</td></tr>
+      <tr class="sub"><td>Construcción BR</td><td id="o-cbr">—</td></tr>
+      <tr class="sub"><td>Honorarios técnicos</td><td id="o-hon">—</td></tr>
+      <tr class="sub"><td>Impuestos y licencias</td><td id="o-imp">—</td></tr>
+      <tr class="sub2"><td>ICIO y tasas</td><td id="o-icio">—</td></tr>
+      <tr class="sub2"><td>IBI durante obra</td><td id="o-ibi">—</td></tr>
+      <tr class="sub2"><td>Primera ocupación</td><td id="o-po">—</td></tr>
+      <tr class="sub2"><td>Plusvalías municipales</td><td id="o-pv">—</td></tr>
+      <tr class="sub"><td>Costes legales</td><td id="o-leg">—</td></tr>
+      <tr class="sub"><td>Seguros</td><td id="o-seg">—</td></tr>
+      <tr class="sub"><td>Comercialización</td><td id="o-com">—</td></tr>
+      <tr class="sub"><td>Gestión / PM</td><td id="o-pm">—</td></tr>
+      <tr class="tot"><td>Margen bruto</td><td id="o-mg">—</td></tr>
+      <tr class="sub"><td>Coste financiero</td><td id="o-fin">—</td></tr>
+      <tr class="ben" id="row-ben"><td>Beneficio a/impuestos</td><td id="o-ben">—</td></tr>
+      <tr class="sub" id="row-is"><td>Impuesto sociedades (25%)</td><td id="o-is">—</td></tr>
+      <tr class="ben" id="row-neto"><td>Beneficio neto</td><td id="o-neto">—</td></tr>
+    </table>
+    <div class="alerts" id="alerts"></div>
+    <div class="rbox hidden" id="res-box">
+      <div class="rl">Precio máximo ofertable por el suelo</div>
+      <div class="rv" id="res-val">—</div>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<script>
+let tipo='promocion', sueloModo='dado', tipCount=0;
+
+function setTipo(t){
+  tipo=t;
+  document.getElementById('btn-prom').classList.toggle('active',t==='promocion');
+  document.getElementById('btn-coop').classList.toggle('active',t==='cooperativa');
+  if(t==='cooperativa'){document.getElementById('r-pm').value=10;document.getElementById('r-com').value=0;}
+  else{document.getElementById('r-pm').value=5;document.getElementById('r-com').value=2.5;}
+  calcular();
+}
+
+function setSuelo(m){
+  sueloModo=m;
+  document.getElementById('btn-dado').classList.toggle('active',m==='dado');
+  document.getElementById('btn-res').classList.toggle('active',m==='residual');
+  document.getElementById('suelo-dado').classList.toggle('hidden',m==='residual');
+  document.getElementById('suelo-residual').classList.toggle('hidden',m==='dado');
+  calcular();
+}
+
+function addTip(){
+  const id=tipCount++;
+  const d=document.createElement('div');
+  d.className='tip-row';d.id='tr'+id;
+  d.innerHTML='<div class="fd"><select oninput="calcular()"><option>1 hab</option><option>2 hab</option><option selected>3 hab</option><option>4 hab</option></select></div><div class="fd"><input type="number" oninput="calcular()"></div><div class="fd"><input type="number" oninput="calcular()"></div><div class="fd"><input type="number" oninput="calcular()"></div><button class="rm" onclick="document.getElementById(\'tr'+id+'\').remove();calcular()">×</button>';
+  document.getElementById('tipologias').appendChild(d);
+}
+
+function fmt(n){return new Intl.NumberFormat('es-ES',{minimumFractionDigits:0,maximumFractionDigits:0}).format(Math.round(n))+' €'}
+function fmtP(n){return (n*100).toFixed(1).replace('.',',')+' %'}
+function fmtX(n){return n.toFixed(2).replace('.',',')+' x'}
+function g(id){return parseFloat(document.getElementById(id).value)||0}
+
+function calcular(){
+  let vViv=0,m2cViv=0;
+  document.querySelectorAll('#tipologias .tip-row').forEach(function(r){
+    var ins=r.querySelectorAll('input[type="number"]');
+    var u=parseFloat(ins[0].value)||0,s=parseFloat(ins[1].value)||0,p=parseFloat(ins[2].value)||0;
+    vViv+=u*s*p; m2cViv+=u*s;
+  });
+  var locM2=g('loc-m2'),locP=g('loc-p'),garU=g('gar-u'),garP=g('gar-p');
+  var vLoc=locM2*locP,vGar=garU*garP;
+  var ventas=vViv+vLoc+vGar;
+  if(ventas===0)return;
+
+  var edif=g('edificable');
+  var cSR=g('m2-sr')*g('c-sr');
+  var cBR=g('m2-br')*g('c-br');
+  var construccion=cSR+cBR;
+
+  var urb=edif*g('r-urb');
+  var hon=construccion*(g('r-hon')/100);
+  var leg=ventas*(g('r-leg')/100);
+  var com=tipo==='cooperativa'?0:ventas*(g('r-com')/100);
+  var pm=construccion*(g('r-pm')/100);
+  var seg=construccion*(g('r-seg')/100);
+  var icio=construccion*(g('r-icio')/100);
+  var ibi=construccion*(g('r-ibi')/100);
+  var po=construccion*(g('r-po')/100);
+  var pv=ventas*(g('r-pv')/100);
+  var totalImp=icio+ibi+po+pv;
+  var rFin=g('r-fin')/100;
+
+  var sueloBruto=0,residualCalc=false;
+  if(sueloModo==='residual'){
+    residualCalc=true;
+    var mgObj=g('mg-obj')/100;
+    var costesEx=urb+construccion+hon+totalImp+leg+seg+com+pm;
+    sueloBruto=(ventas*(1-mgObj)-costesEx)/(1+rFin);
+    if(sueloBruto<0)sueloBruto=0;
+  } else {
+    var pSuelo=g('p-suelo');
+    var interm=g('s-interm')/100;
+    var trans=g('s-trans')/100;
+    sueloBruto=pSuelo*(1+interm+trans);
+    var pill=document.getElementById('pill-m2e');
+    if(edif>0&&pSuelo>0){pill.textContent=Math.round(pSuelo/edif).toLocaleString('es-ES')+' €/m²e';pill.style.display='inline-block';}
+    else pill.style.display='none';
+  }
+
+  var costesExFin=sueloBruto+urb+construccion+hon+totalImp+leg+seg+com+pm;
+  var costeFin=costesExFin*rFin;
+  var costesTotal=costesExFin+costeFin;
+
+  var mgBruto=ventas-costesExFin;
+  var benAntes=mgBruto-costeFin;
+  var is=tipo==='cooperativa'?0:Math.max(0,benAntes*0.25);
+  var benNeto=benAntes-is;
+  var mgPct=mgBruto/ventas,benPct=benAntes/ventas;
+
+  var aplazPct=sueloModo==='dado'?g('s-aplaz')/100:0.9;
+  var invMax=sueloBruto*(1-aplazPct)+costesExFin*0.5;
+  var roi=ventas/costesTotal;
+  var precMed=m2cViv>0?vViv/m2cViv:0;
+
+  document.getElementById('resultado').classList.remove('hidden');
+  var nom=document.getElementById('nombre').value||'Proyecto';
+  var ub=document.getElementById('ubicacion').value||'';
+  document.getElementById('r-tit').textContent=nom+(ub?' · '+ub:'');
+  document.getElementById('r-meta').textContent=tipo==='cooperativa'?'Cooperativa':'Promoción tradicional';
+
+  var mc=mgPct>=0.15?'g':mgPct>=0.10?'w':'b';
+  var bc=benPct>=0.08?'g':benPct>=0.03?'w':'b';
+  document.getElementById('k-mg').textContent=fmtP(mgPct);document.getElementById('k-mg').className='kv '+mc;
+  document.getElementById('k-ben').textContent=fmtP(benPct);document.getElementById('k-ben').className='kv '+bc;
+  document.getElementById('k-roi').textContent=fmtX(roi);
+  document.getElementById('k-inv').textContent=fmt(invMax);
+
+  document.getElementById('o-vtas').textContent=fmt(ventas);
+  document.getElementById('o-viv').textContent=fmt(vViv)+(precMed>0?' ('+Math.round(precMed).toLocaleString('es-ES')+' €/m²c)':'');
+  document.getElementById('o-loc').textContent=vLoc>0?fmt(vLoc):'—';
+  document.getElementById('o-gar').textContent=vGar>0?fmt(vGar):'—';
+  document.getElementById('o-cost').textContent='−'+fmt(costesTotal);
+  document.getElementById('o-suelo').textContent='−'+fmt(sueloBruto);
+  document.getElementById('o-urb').textContent=urb>0?'−'+fmt(urb):'—';
+  document.getElementById('o-csr').textContent=cSR>0?'−'+fmt(cSR):'—';
+  document.getElementById('o-cbr').textContent=cBR>0?'−'+fmt(cBR):'—';
+  document.getElementById('o-hon').textContent='−'+fmt(hon);
+  document.getElementById('o-imp').textContent='−'+fmt(totalImp);
+  document.getElementById('o-icio').textContent='−'+fmt(icio);
+  document.getElementById('o-ibi').textContent='−'+fmt(ibi);
+  document.getElementById('o-po').textContent='−'+fmt(po);
+  document.getElementById('o-pv').textContent='−'+fmt(pv);
+  document.getElementById('o-leg').textContent='−'+fmt(leg);
+  document.getElementById('o-seg').textContent='−'+fmt(seg);
+  document.getElementById('o-com').textContent=com>0?'−'+fmt(com):'—';
+  document.getElementById('o-pm').textContent='−'+fmt(pm);
+  document.getElementById('o-mg').textContent=fmt(mgBruto)+' ('+fmtP(mgPct)+' s/ventas)';
+  document.getElementById('o-fin').textContent='−'+fmt(costeFin);
+  document.getElementById('o-ben').textContent=fmt(benAntes)+' ('+fmtP(benPct)+' s/ventas)';
+  document.getElementById('row-ben').className='ben '+bc;
+
+  if(tipo==='cooperativa'){
+    document.getElementById('row-is').classList.add('hidden');
+    document.getElementById('row-neto').classList.add('hidden');
+  } else {
+    document.getElementById('row-is').classList.remove('hidden');
+    document.getElementById('row-neto').classList.remove('hidden');
+    document.getElementById('o-is').textContent='−'+fmt(is);
+    document.getElementById('o-neto').textContent=fmt(benNeto);
+  }
+
+  var al=[];
+  if(mgPct<0.10)al.push({t:'b',tx:'Margen bruto por debajo del 10% — riesgo elevado.'});
+  else if(mgPct<0.15)al.push({t:'w',tx:'Margen bruto entre 10–15% — revisar supuestos antes de continuar.'});
+  else al.push({t:'g',tx:'Margen superior al 15% — viable para pasar a estudio de detalle.'});
+  if(benPct<0.03)al.push({t:'b',tx:'Beneficio neto por debajo del 3% — proyecto no rentable.'});
+  if(tipo==='cooperativa')al.push({t:'g',tx:'Cooperativa: beneficio promotor = 0. El resultado es el ahorro del cooperativista vs. precio de mercado.'});
+  var ico={g:'✓',w:'⚠',b:'✕'};
+  document.getElementById('alerts').innerHTML=al.map(function(a){return '<div class="alert '+a.t+'"><span style="flex-shrink:0;font-weight:600">'+ico[a.t]+'</span><span>'+a.tx+'</span></div>';}).join('');
+
+  if(residualCalc){
+    document.getElementById('res-box').classList.remove('hidden');
+    var pM2=edif>0?sueloBruto/edif:0;
+    document.getElementById('res-val').textContent=Math.round(pM2).toLocaleString('es-ES')+' €/m²e · Total: '+fmt(sueloBruto);
+  } else {
+    document.getElementById('res-box').classList.add('hidden');
+  }
+}
+
+addTip();
+</script>
+</body>
+</html>
