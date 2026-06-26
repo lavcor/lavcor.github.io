@@ -133,7 +133,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div id="suelo-residual" class="hidden">
-    <div class="fd"><label>Margen bruto objetivo (%)</label><input type="number" id="mg-obj" value="15" oninput="calcular()"></div>
+    <p style="font-size:12px;color:#888;margin-top:4px" id="res-label-coop">Cooperativa: se calcula el precio máximo de suelo con beneficio promotor = 0.</p>
+    <p style="font-size:12px;color:#888;margin-top:4px" id="res-label-prom" class="hidden">Promoción: se calcula el precio máximo de suelo para un margen bruto objetivo del 18% (múltiplo ~1,3x).</p>
   </div>
 </div>
 
@@ -230,8 +231,9 @@ function setTipo(t){
   tipo=t;
   document.getElementById('btn-prom').classList.toggle('active',t==='promocion');
   document.getElementById('btn-coop').classList.toggle('active',t==='cooperativa');
-  if(t==='cooperativa'){document.getElementById('r-pm').value=10;document.getElementById('r-com').value=0;}
-  else{document.getElementById('r-pm').value=5;document.getElementById('r-com').value=2.5;}
+  if(t==='cooperativa'){document.getElementById('r-pm').value=10;}
+  else{document.getElementById('r-pm').value=5;}
+  document.getElementById('r-com').value=2.5;
   calcular();
 }
 
@@ -277,7 +279,7 @@ function calcular(){
   var urb=edif*g('r-urb');
   var hon=construccion*(g('r-hon')/100);
   var leg=ventas*(g('r-leg')/100);
-  var com=tipo==='cooperativa'?0:ventas*(g('r-com')/100);
+  var com=ventas*(g('r-com')/100);
   var pm=construccion*(g('r-pm')/100);
   var seg=construccion*(g('r-seg')/100);
   var icio=construccion*(g('r-icio')/100);
@@ -290,9 +292,19 @@ function calcular(){
   var sueloBruto=0,residualCalc=false;
   if(sueloModo==='residual'){
     residualCalc=true;
-    var mgObj=g('mg-obj')/100;
     var costesEx=urb+construccion+hon+totalImp+leg+seg+com+pm;
-    sueloBruto=(ventas*(1-mgObj)-costesEx)/(1+rFin);
+    if(tipo==='cooperativa'){
+      // Beneficio promotor = 0: ventas = costes totales incl. financiero
+      // ventas = (suelo + costesEx) * (1 + rFin)  →  suelo = ventas/(1+rFin) - costesEx
+      sueloBruto=ventas/(1+rFin)-costesEx;
+    } else {
+      // Promoción: objetivo múltiplo 1.3x sobre inversión propia (ROI equity)
+      // Beneficio neto objetivo = costesTotal * 0.23 (aprox. para múltiplo 1.3x tras IS 25%)
+      // Despejamos: ventas - (sueloBruto+costesEx)*(1+rFin) - IS = objetivo
+      // Simplificación práctica: margen bruto objetivo = 18% s/ventas
+      var mgObj=0.18;
+      sueloBruto=(ventas*(1-mgObj)-costesEx)/(1+rFin);
+    }
     if(sueloBruto<0)sueloBruto=0;
   } else {
     var pSuelo=g('p-suelo');
@@ -366,18 +378,15 @@ function calcular(){
     document.getElementById('o-neto').textContent=fmt(benNeto);
   }
 
-  var al=[];
-  if(mgPct<0.10)al.push({t:'b',tx:'Margen bruto por debajo del 10% — riesgo elevado.'});
-  else if(mgPct<0.15)al.push({t:'w',tx:'Margen bruto entre 10–15% — revisar supuestos antes de continuar.'});
-  else al.push({t:'g',tx:'Margen superior al 15% — viable para pasar a estudio de detalle.'});
-  if(benPct<0.03)al.push({t:'b',tx:'Beneficio neto por debajo del 3% — proyecto no rentable.'});
-  if(tipo==='cooperativa')al.push({t:'g',tx:'Cooperativa: beneficio promotor = 0. El resultado es el ahorro del cooperativista vs. precio de mercado.'});
-  var ico={g:'✓',w:'⚠',b:'✕'};
-  document.getElementById('alerts').innerHTML=al.map(function(a){return '<div class="alert '+a.t+'"><span style="flex-shrink:0;font-weight:600">'+ico[a.t]+'</span><span>'+a.tx+'</span></div>';}).join('');
+  document.getElementById('alerts').innerHTML='';
 
   if(residualCalc){
+    document.getElementById('res-label-coop').style.display=tipo==='cooperativa'?'block':'none';
+    document.getElementById('res-label-prom').style.display=tipo==='promocion'?'block':'none';
     document.getElementById('res-box').classList.remove('hidden');
     var pM2=edif>0?sueloBruto/edif:0;
+    var resLabel=tipo==='cooperativa'?'Precio máximo ofertable (beneficio promotor = 0)':'Precio máximo ofertable (margen bruto 18%)';
+    document.querySelector('.rbox .rl').textContent=resLabel;
     document.getElementById('res-val').textContent=Math.round(pM2).toLocaleString('es-ES')+' €/m²e · Total: '+fmt(sueloBruto);
   } else {
     document.getElementById('res-box').classList.add('hidden');
