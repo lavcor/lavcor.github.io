@@ -95,20 +95,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <div class="sec">
   <div class="sl">Producto</div>
+  <div class="tog" style="margin-bottom:14px">
+    <button class="tb active" id="btn-pluri" onclick="setEdif('plurifamiliar')">Plurifamiliar</button>
+    <button class="tb" id="btn-uni" onclick="setEdif('unifamiliar')">Unifamiliar</button>
+  </div>
+  <div id="plantas-row" class="g2" style="margin-bottom:12px">
+    <div class="fd"><label>Número de plantas</label><input type="number" id="n-plantas" value="1" min="1" oninput="calcular()"></div>
+  </div>
   <div class="g2">
     <div class="fd"><label>Sup. parcela (m²)</label><input type="number" id="parcela" oninput="calcular()"></div>
     <div class="fd"><label>Sup. edificable (m²)</label><input type="number" id="edificable" oninput="calcular()"></div>
   </div>
-  <div class="tip-hdr"><span>Tipo</span><span>Uds</span><span>m²c / ud</span><span>€/m²c</span><span></span></div>
+  <div class="tip-hdr"><span>Tipo</span><span id="lbl-uds">Uds/planta</span><span>m²c / ud</span><span>€/m²c</span><span></span></div>
   <div id="tipologias"></div>
   <button class="add-btn" onclick="addTip()">+ Añadir tipología</button>
-  <div class="g3" style="margin-top:14px">
-    <div class="fd"><label>Locales — m²c totales</label><input type="number" id="loc-m2" oninput="calcular()"></div>
-    <div class="fd"><label>€/m²c local</label><input type="number" id="loc-p" oninput="calcular()"></div>
-    <div class="fd"><label>Garajes no vinc. (uds)</label><input type="number" id="gar-u" oninput="calcular()"></div>
+  <div style="font-size:11px;color:#aaa;margin:12px 0 6px;font-weight:500;text-transform:uppercase;letter-spacing:.05em">Locales comerciales</div>
+  <div class="g3">
+    <div class="fd"><label>Nº unidades</label><input type="number" id="loc-u" value="0" oninput="calcular()"></div>
+    <div class="fd"><label>m²c / unidad</label><input type="number" id="loc-m2u" oninput="calcular()"></div>
+    <div class="fd"><label>€/m²c local (venta)</label><input type="number" id="loc-p" oninput="calcular()"></div>
   </div>
-  <div class="g2">
-    <div class="fd"><label>Precio garaje (€/ud)</label><input type="number" id="gar-p" oninput="calcular()"></div>
+  <div style="font-size:11px;color:#aaa;margin:8px 0 6px;font-weight:500;text-transform:uppercase;letter-spacing:.05em">Garajes</div>
+  <div class="g4">
+    <div class="fd"><label>Vinculados (uds)</label><input type="number" id="gar-vinc" value="0" oninput="calcular()"></div>
+    <div class="fd"><label>Precio vinc. (€/ud)</label><input type="number" id="gar-vinc-p" placeholder="Incluido en viv." oninput="calcular()"></div>
+    <div class="fd"><label>No vinculados (uds)</label><input type="number" id="gar-u" value="0" oninput="calcular()"></div>
+    <div class="fd"><label>Precio no vinc. (€/ud)</label><input type="number" id="gar-p" oninput="calcular()"></div>
+  </div>
+  <div class="g2" style="margin-top:8px">
+    <div class="fd"><label>m²c por plaza garaje</label><input type="number" id="gar-m2" value="30" oninput="calcular()"></div>
+  </div>
+  <div style="font-size:11px;color:#aaa;margin:8px 0 6px;font-weight:500;text-transform:uppercase;letter-spacing:.05em">Trasteros</div>
+  <div class="g3">
+    <div class="fd"><label>Vinculados (uds)</label><input type="number" id="tras-vinc" value="0" oninput="calcular()"></div>
+    <div class="fd"><label>No vinculados (uds)</label><input type="number" id="tras-u" value="0" oninput="calcular()"></div>
+    <div class="fd"><label>m²c por trastero</label><input type="number" id="tras-m2" value="8" oninput="calcular()"></div>
   </div>
 </div>
 
@@ -140,15 +161,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <div class="sec">
   <div class="sl">Construcción</div>
-  <div class="g4">
+  <div class="g3">
     <div class="fd"><label>€/m²c sobre rasante</label><input type="number" id="c-sr" oninput="calcular()"></div>
     <div class="fd"><label>€/m²c bajo rasante</label><input type="number" id="c-br" oninput="calcular()"></div>
-    <div class="fd"><label>m²c sobre rasante</label><input type="number" id="m2-sr" oninput="calcular()"></div>
-    <div class="fd"><label>m²c bajo rasante</label><input type="number" id="m2-br" oninput="calcular()"></div>
-  </div>
-  <div class="g2" style="margin-top:10px">
     <div class="fd"><label>Duración obra (meses)</label><input type="number" id="dur" value="22" oninput="calcular()"></div>
   </div>
+  <div class="g2" style="margin-top:8px">
+    <div class="rf"><label>Paquete complementario SR (tendederos, terrazas, ZZCC)</label><input type="number" id="r-comp" value="16" step="1" oninput="calcular()"><span>% s/SR</span></div>
+    <div class="rf"><label>€/m²c paquete complementario</label><input type="number" id="c-comp" value="400" step="10" oninput="calcular()"><span>€/m²c</span></div>
+  </div>
+  <p style="font-size:11px;color:#aaa;margin-top:6px">m²c SR = edificable × 1,06 · m²c BR = (plazas + trasteros) × m²c respectivos</p>
 </div>
 
 <div class="sec">
@@ -191,11 +213,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <tr><td>Ventas totales</td><td id="o-vtas">—</td></tr>
       <tr class="sub"><td>Viviendas</td><td id="o-viv">—</td></tr>
       <tr class="sub"><td>Locales</td><td id="o-loc">—</td></tr>
-      <tr class="sub"><td>Garajes</td><td id="o-gar">—</td></tr>
+      <tr class="sub"><td>Garajes vinculados</td><td id="o-gar-vinc">—</td></tr>
+      <tr class="sub"><td>Garajes no vinculados</td><td id="o-gar">—</td></tr>
       <tr><td style="padding-top:10px">Costes totales</td><td id="o-cost">—</td></tr>
       <tr class="sub"><td>Suelo (incl. intermediación + transacción)</td><td id="o-suelo">—</td></tr>
       <tr class="sub"><td>Urbanización</td><td id="o-urb">—</td></tr>
       <tr class="sub"><td>Construcción SR</td><td id="o-csr">—</td></tr>
+      <tr class="sub"><td>Paquete complementario SR</td><td id="o-comp">—</td></tr>
       <tr class="sub"><td>Construcción BR</td><td id="o-cbr">—</td></tr>
       <tr class="sub"><td>Honorarios técnicos</td><td id="o-hon">—</td></tr>
       <tr class="sub"><td>Impuestos y licencias</td><td id="o-imp">—</td></tr>
@@ -225,7 +249,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 <script>
-let tipo='promocion', sueloModo='dado', tipCount=0;
+let tipo='promocion', sueloModo='dado', tipCount=0, edifTipo='plurifamiliar';
 
 function setTipo(t){
   tipo=t;
@@ -234,6 +258,17 @@ function setTipo(t){
   if(t==='cooperativa'){document.getElementById('r-pm').value=10;}
   else{document.getElementById('r-pm').value=5;}
   document.getElementById('r-com').value=2.5;
+  calcular();
+}
+
+function setEdif(e){
+  edifTipo=e;
+  document.getElementById('btn-pluri').classList.toggle('active',e==='plurifamiliar');
+  document.getElementById('btn-uni').classList.toggle('active',e==='unifamiliar');
+  var plantasRow=document.getElementById('plantas-row');
+  plantasRow.style.display=e==='plurifamiliar'?'grid':'none';
+  var lbl=document.getElementById('lbl-uds');
+  lbl.textContent=e==='plurifamiliar'?'Uds/planta':'Uds';
   calcular();
 }
 
@@ -261,20 +296,31 @@ function g(id){return parseFloat(document.getElementById(id).value)||0}
 
 function calcular(){
   let vViv=0,m2cViv=0;
+  var plantas=edifTipo==='plurifamiliar'?(g('n-plantas')||1):1;
   document.querySelectorAll('#tipologias .tip-row').forEach(function(r){
     var ins=r.querySelectorAll('input[type="number"]');
-    var u=parseFloat(ins[0].value)||0,s=parseFloat(ins[1].value)||0,p=parseFloat(ins[2].value)||0;
+    var u=(parseFloat(ins[0].value)||0)*plantas;
+    var s=parseFloat(ins[1].value)||0,p=parseFloat(ins[2].value)||0;
     vViv+=u*s*p; m2cViv+=u*s;
   });
-  var locM2=g('loc-m2'),locP=g('loc-p'),garU=g('gar-u'),garP=g('gar-p');
-  var vLoc=locM2*locP,vGar=garU*garP;
+  var locU=g('loc-u'), locM2u=g('loc-m2u'), locP=g('loc-p');
+  var locM2=locU*locM2u;
+  var garVincP=g('gar-vinc-p');
+  var garU=g('gar-u'), garP=g('gar-p');
+  var vLoc=locM2*locP, vGar=garU*garP+g('gar-vinc')*garVincP;
   var ventas=vViv+vLoc+vGar;
   if(ventas===0)return;
 
   var edif=g('edificable');
-  var cSR=g('m2-sr')*g('c-sr');
-  var cBR=g('m2-br')*g('c-br');
-  var construccion=cSR+cBR;
+  var garVinc=g('gar-vinc'), garM2=g('gar-m2')||30;
+  var trasVinc=g('tras-vinc'), trasU=g('tras-u'), trasM2=g('tras-m2')||8;
+  var m2SR=edif*1.06;
+  var m2Comp=m2SR*(g('r-comp')/100);
+  var m2BR=(garVinc+garU)*garM2+(trasVinc+trasU)*trasM2;
+  var cSR=m2SR*g('c-sr');
+  var cComp=m2Comp*g('c-comp');
+  var cBR=m2BR*g('c-br');
+  var construccion=cSR+cComp+cBR;
 
   var urb=edif*g('r-urb');
   var hon=construccion*(g('r-hon')/100);
@@ -345,14 +391,22 @@ function calcular(){
   document.getElementById('k-inv').textContent=fmt(invMax);
 
   document.getElementById('o-vtas').textContent=fmt(ventas);
-  document.getElementById('o-viv').textContent=fmt(vViv)+(precMed>0?' ('+Math.round(precMed).toLocaleString('es-ES')+' €/m²c)':'');
-  document.getElementById('o-loc').textContent=vLoc>0?fmt(vLoc):'—';
-  document.getElementById('o-gar').textContent=vGar>0?fmt(vGar):'—';
+  var totalUds=0;
+  document.querySelectorAll('#tipologias .tip-row').forEach(function(r){
+    var ins=r.querySelectorAll('input[type="number"]');
+    totalUds+=(parseFloat(ins[0].value)||0)*plantas;
+  });
+  document.getElementById('o-viv').textContent=fmt(vViv)+(precMed>0?' ('+Math.round(totalUds)+' uds · '+Math.round(precMed).toLocaleString('es-ES')+' €/m²c)':'');
+  document.getElementById('o-loc').textContent=vLoc>0?fmt(vLoc)+' ('+locU+' uds × '+Math.round(locM2u)+' m²c)':'—';
+  var vGarVinc=g('gar-vinc')*garVincP;
+  document.getElementById('o-gar-vinc').textContent=vGarVinc>0?fmt(vGarVinc)+' ('+Math.round(g('gar-vinc'))+' uds)':'— (incl. en viviendas)';
+  document.getElementById('o-gar').textContent=vGar-vGarVinc>0?fmt(vGar-vGarVinc)+' ('+Math.round(garU)+' uds)':'—';
   document.getElementById('o-cost').textContent='−'+fmt(costesTotal);
   document.getElementById('o-suelo').textContent='−'+fmt(sueloBruto);
   document.getElementById('o-urb').textContent=urb>0?'−'+fmt(urb):'—';
-  document.getElementById('o-csr').textContent=cSR>0?'−'+fmt(cSR):'—';
-  document.getElementById('o-cbr').textContent=cBR>0?'−'+fmt(cBR):'—';
+  document.getElementById('o-csr').textContent=cSR>0?'−'+fmt(cSR)+' ('+Math.round(m2SR).toLocaleString('es-ES')+' m²c)':'—';
+  document.getElementById('o-comp').textContent=cComp>0?'−'+fmt(cComp)+' ('+Math.round(m2Comp).toLocaleString('es-ES')+' m²c)':'—';
+  document.getElementById('o-cbr').textContent=cBR>0?'−'+fmt(cBR)+' ('+Math.round(m2BR).toLocaleString('es-ES')+' m²c)':'—';
   document.getElementById('o-hon').textContent='−'+fmt(hon);
   document.getElementById('o-imp').textContent='−'+fmt(totalImp);
   document.getElementById('o-icio').textContent='−'+fmt(icio);
